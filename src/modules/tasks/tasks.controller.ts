@@ -10,14 +10,14 @@ import {
   NotFoundException,
   UseInterceptors,
 } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import { TaskNotFoundFilter } from './filters/task-not-found.filter';
-import { IsPublic } from '@src/core/decorators/is-public.decorator';
-import { LoggingInterceptor } from '@src/core/interceptors/logging.interceptor';
-import { User } from '@src/core/decorators/user.decorator';
-import { UserDto } from '@src/core/dto/user.dto';
+import { TasksService } from '@modules/tasks/tasks.service';
+import { CreateTaskDto } from '@modules/tasks/dto/create-task.dto';
+import { UpdateTaskDto } from '@modules/tasks/dto/update-task.dto';
+import { TaskNotFoundFilter } from '@modules/tasks/filters/task-not-found.filter';
+import { IsPublic } from '@common/decorators/is-public.decorator';
+import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
+import { User } from '@common/decorators/user.decorator';
+import { UserDto } from '@common/dto/user.dto';
 
 @Controller('tasks')
 @UseInterceptors(LoggingInterceptor)

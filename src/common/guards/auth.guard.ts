@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { IsPublic } from '../decorators/is-public.decorator';
+import { IsPublic } from '@common/decorators/is-public.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

@@ -1,7 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { TasksModule } from '@modules/tasks/tasks.module';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from '@common/guards/auth.guard';
 
 @Module({
   imports: [TasksModule],
