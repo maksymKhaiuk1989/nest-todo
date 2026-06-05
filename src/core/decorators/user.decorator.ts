@@ -1,21 +1,29 @@
-import { ExecutionContext, createParamDecorator } from '@nestjs/common';
+import { ExecutionContext, createParamDecorator, Logger } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject } from 'class-validator';
+import { UserDto } from '@src/core/dto/user.dto';
 import { Request } from 'express';
 
-interface User {
-  name: string;
-}
-
 export const User = createParamDecorator(
-  (data, context: ExecutionContext): User | undefined => {
+  async (data, context: ExecutionContext): Promise<UserDto | undefined> => {
     const request = context.switchToHttp().getRequest<Request>();
-    const user = request.get('x-user-id');
+    const rawUser = request.get('x-user-id');
+    const logger = new Logger('UserDecorator');
 
-    if (!user || typeof user !== 'string') return undefined;
+    if (typeof rawUser !== 'string') {
+      return undefined;
+    }
 
     try {
-      return JSON.parse(user) as User;
+      const parsed: unknown = JSON.parse(rawUser);
+
+      const userInstance = plainToInstance(UserDto, parsed);
+
+      await validateOrReject(userInstance);
+
+      return userInstance;
     } catch {
-      return undefined;
+      logger.log('Invalid user header');
     }
   },
 );

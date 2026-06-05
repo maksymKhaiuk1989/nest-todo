@@ -17,6 +17,7 @@ import { TaskNotFoundFilter } from './filters/task-not-found.filter';
 import { IsPublic } from '@src/core/decorators/is-public.decorator';
 import { LoggingInterceptor } from '@src/core/interceptors/logging.interceptor';
 import { User } from '@src/core/decorators/user.decorator';
+import { UserDto } from '@src/core/dto/user.dto';
 
 @Controller('tasks')
 @UseInterceptors(LoggingInterceptor)
@@ -24,7 +25,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto, @User() user: string) {
+  create(@Body() createTaskDto: CreateTaskDto, @User() user: UserDto) {
     console.log(user);
     return this.tasksService.create(createTaskDto);
   }
