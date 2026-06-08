@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from '@modules/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@modules/tasks/dto/update-task.dto';
 import { Task } from '@modules/tasks/entities/task.entity';
@@ -8,7 +8,7 @@ import { UserDto } from '@src/common/dto/user.dto';
 
 @Injectable()
 export class TasksService {
-  constructor(@Inject(Notifier) private readonly notifier: Notifier) {}
+  constructor(private readonly notifier: Notifier) {}
   tasks: Task[] = [];
 
   create(createTaskDto: CreateTaskDto, user: UserDto) {
