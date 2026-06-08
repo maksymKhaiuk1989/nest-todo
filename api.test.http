@@ -19,7 +19,7 @@ Authorization: Bearer secret-token
 x-user-id: {"name": "Vasya", "email": "pupkin@gmail.com"}
 
 {
-    "title": "world",
+    "title": "My Test Task no.1",
     "status": "pending",
     "description": "description"
     

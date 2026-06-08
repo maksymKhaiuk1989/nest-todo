@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from '@modules/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@modules/tasks/dto/update-task.dto';
 import { Task } from '@modules/tasks/entities/task.entity';
 import { randomUUID } from 'node:crypto';
+import { Notifier } from '@src/modules/notifier/notifier';
+import { UserDto } from '@src/common/dto/user.dto';
 
 @Injectable()
 export class TasksService {
+  constructor(@Inject('NOTIFIER') private readonly notifier: Notifier) {}
   tasks: Task[] = [];
 
-  create(createTaskDto: CreateTaskDto) {
+  create(createTaskDto: CreateTaskDto, user: UserDto) {
     const task: Task = {
       ...createTaskDto,
       id: randomUUID(),
@@ -17,6 +20,11 @@ export class TasksService {
       updatedAt: new Date().toISOString(),
     };
     this.tasks.push(task);
+
+    this.notifier.send(
+      `Hello ${user.name}, Your task: "${task.title}" has been created!`,
+    );
+
     return this.tasks;
   }
 
