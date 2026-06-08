@@ -8,7 +8,7 @@ import { UserDto } from '@src/common/dto/user.dto';
 
 @Injectable()
 export class TasksService {
-  constructor(@Inject('NOTIFIER') private readonly notifier: Notifier) {}
+  constructor(@Inject(Notifier) private readonly notifier: Notifier) {}
   tasks: Task[] = [];
 
   create(createTaskDto: CreateTaskDto, user: UserDto) {
