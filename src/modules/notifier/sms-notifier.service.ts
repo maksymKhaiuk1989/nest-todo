@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Notifier } from './notifier';
+import { BaseNotifier } from '@src/modules/notifier/notifier.base';
 
 @Injectable()
-export class SmsNotifier implements Notifier {
-  send(message: string) {
+export class SmsNotifier extends BaseNotifier {
+  performSend(message: string) {
     console.log('[SMS] Sending...:', message);
+
+    return true;
   }
 }

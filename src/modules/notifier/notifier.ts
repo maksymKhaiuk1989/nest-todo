@@ -1,3 +1,4 @@
 export abstract class Notifier {
-  abstract send(message: string): void;
+  protected abstract validateBeforeSend(message: string): boolean;
+  abstract send(message: string): boolean;
 }
