@@ -1,3 +1,5 @@
 import { Reflector } from '@nestjs/core';
 
-export const IsPublic = Reflector.createDecorator({ transform: () => true });
+export const IsPublic = Reflector.createDecorator<boolean>({
+  transform: () => true,
+});
