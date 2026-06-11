@@ -43,7 +43,7 @@ describe('TasksController', () => {
         .mockReturnValue(createdTask);
       const response = tasksController.create(payload, mockUser);
 
-      expect(createSpy).toHaveBeenCalledWith(createdTask, mockUser);
+      expect(createSpy).toHaveBeenCalledWith(payload, mockUser);
       expect(response).toBe(createdTask);
     });
   });
