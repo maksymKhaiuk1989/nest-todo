@@ -20,12 +20,3 @@ export function runValidationTests(createService: () => Notifier) {
     });
   });
 }
-
-export function createMockNotifier(): jest.Mocked<Notifier> {
-  return { send: jest.fn() } as Partial<Notifier> as jest.Mocked<Notifier>;
-}
-
-export const mockNotifierProvider = {
-  provide: Notifier,
-  useValue: createMockNotifier(),
-};

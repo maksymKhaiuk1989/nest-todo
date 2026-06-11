@@ -5,7 +5,7 @@ import { TasksService } from '@src/modules/tasks/tasks.service';
 import { TaskStatus } from '@src/modules/tasks/types/tasks.type';
 import { randomUUID } from 'crypto';
 import { Test } from '@nestjs/testing';
-import { mockNotifierProvider } from '@src/modules/notifier/__tests__/notifier.helper';
+import { mockNotifierProvider } from '@src/modules/notifier/__tests__/notifier.mock';
 
 describe('TasksController', () => {
   let tasksController: TasksController;
