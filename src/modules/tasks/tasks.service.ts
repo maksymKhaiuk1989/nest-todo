@@ -25,7 +25,7 @@ export class TasksService {
       `Hello ${user.name}, Your task: "${task.title}" has been created!`,
     );
 
-    return this.tasks;
+    return task;
   }
 
   findAll() {
