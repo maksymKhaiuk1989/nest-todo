@@ -15,7 +15,7 @@ describe('SmsNotifier', () => {
     it('It should send sms', () => {
       const message = 'Hello world!!!';
 
-      smsService.send(message);
+      smsService.performSend(message);
 
       expect(console.log).toHaveBeenCalledWith('[SMS] Sending...:', message);
     });

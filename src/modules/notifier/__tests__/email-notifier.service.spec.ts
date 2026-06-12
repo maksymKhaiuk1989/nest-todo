@@ -15,7 +15,7 @@ describe('EmailNotifier', () => {
     it('should send email', () => {
       const message = 'Test message';
 
-      emailService.send(message);
+      emailService.performSend(message);
 
       expect(console.log).toHaveBeenCalledWith('[Email] Sending...:', message);
     });

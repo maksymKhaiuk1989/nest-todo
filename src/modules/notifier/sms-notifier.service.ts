@@ -5,7 +5,6 @@ import { BaseNotifier } from '@src/modules/notifier/notifier.base';
 export class SmsNotifier extends BaseNotifier {
   performSend(message: string) {
     console.log('[SMS] Sending...:', message);
-
     return true;
   }
 }

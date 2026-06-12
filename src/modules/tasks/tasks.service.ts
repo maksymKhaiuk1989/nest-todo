@@ -21,7 +21,7 @@ export class TasksService {
     };
     this.tasks.push(task);
 
-    this.notifier.send(
+    this.notifier.performSend(
       `Hello ${user.name}, Your task: "${task.title}" has been created!`,
     );
 

@@ -17,5 +17,5 @@ export abstract class BaseNotifier extends Notifier {
     return this.performSend(message);
   }
 
-  protected abstract performSend(message: string): boolean;
+  abstract performSend(message: string): boolean;
 }
