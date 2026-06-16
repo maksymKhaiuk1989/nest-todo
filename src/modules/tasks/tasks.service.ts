@@ -1,25 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskDto } from '@modules/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@modules/tasks/dto/update-task.dto';
-import { Task } from '@modules/tasks/entities/task.entity';
+import { TaskEntity } from '@modules/tasks/entities/task.entity';
 import { randomUUID } from 'node:crypto';
 import { Notifier } from '@src/modules/notifier/notifier';
-import { UserDto } from '@src/common/dto/user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '@src/modules/user/entities/user.entity';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly notifier: Notifier) {}
-  tasks: Task[] = [];
+  constructor(
+    @InjectRepository(TaskEntity)
+    private tasks: Repository<TaskEntity>,
+    private readonly notifier: Notifier,
+  ) {}
 
-  create(createTaskDto: CreateTaskDto, user: UserDto) {
-    const task: Task = {
+  async create(createTaskDto: CreateTaskDto, user: UserEntity) {
+    const index = await this.generateTaskIndex(user.id);
+
+    const task = {
       ...createTaskDto,
       id: randomUUID(),
-      index: this.generateTaskIndex(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      index,
     };
-    this.tasks.push(task);
+    await this.tasks.save(task);
 
     this.notifier.performSend(
       `Hello ${user.name}, Your task: "${task.title}" has been created!`,
@@ -28,39 +33,34 @@ export class TasksService {
     return task;
   }
 
-  findAll() {
-    return this.tasks;
+  async findAll() {
+    return this.tasks.find();
   }
 
-  findOne(id: string) {
-    return this.tasks.find((task) => task.id === id);
+  async findOne(id: string) {
+    return this.tasks.findOneBy({ id });
   }
 
-  update(id: string, updateTaskDto: UpdateTaskDto) {
-    const index = this.tasks.findIndex((task) => task.id === id);
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    const task = await this.tasks.update(id, updateTaskDto);
 
-    if (index !== -1) {
-      this.tasks[index] = {
-        ...this.tasks[index],
-        ...updateTaskDto,
-        updatedAt: new Date().toISOString(),
-      };
-    }
-
-    return this.tasks;
+    return task;
   }
 
-  remove(id: string) {
-    return (this.tasks = this.tasks.filter((task) => task.id !== id));
+  async remove(id: string) {
+    await this.tasks.delete(id);
+
+    return true;
   }
 
-  private generateTaskIndex(): number {
-    if (this.tasks.length === 0) return 0;
+  private async generateTaskIndex(id: string): Promise<number> {
+    const lastTask = await this.tasks.findOne({
+      where: { id: id },
+      order: { index: 'DESC' },
+    });
 
-    return this.tasks.reduce((prev, task) => {
-      if (task.index <= prev) return task.index + 1;
+    const newIndex = lastTask ? lastTask.index + 1 : 0;
 
-      return 0;
-    }, 0);
+    return newIndex;
   }
 }

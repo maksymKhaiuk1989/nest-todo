@@ -1,39 +1,15 @@
-### PUBLIC
-GET  http://localhost:3000/tasks HTTP/1.1
-
-### PUBLIC
-GET  http://localhost:3000/tasks HTTP/1.1
-
-### Protected Valid token present
-GET  http://localhost:3000/tasks/8f217f3c-3254-4035-adc7-f6c8c272bd4c HTTP/1.1
-Authorization: Bearer secret-token
-
-### UnauthorizedError Auth header not provided
-GET  http://localhost:3000/tasks/8f217f3c-3254-4035-adc7-f6c8c272bd4c HTTP/1.1
-
-
-### Valid request
-POST http://localhost:3000/tasks
+### Create user John
+POST http://localhost:3000/user/register
 Content-Type: application/json
-Authorization: Bearer secret-token
-x-user-id: {"name": "Vasya", "email": "pupkin@gmail.com"}
 
 {
-    "title": "My Test Task no.1",
-    "status": "pending",
-    "description": "description"
-    
+    "name": "John",
+    "email": "john@gmail.com",
+    "password": "123456qq",
+    "passwordConfirm": "123456qq"
+
 }
 
-### User header not valid
-POST http://localhost:3000/tasks
-Content-Type: application/json
-Authorization: Bearer secret-token
-x-user-id: {"name": "Vasya"}
+### Get user profile by email
 
-{
-    "title": "world",
-    "status": "pending",
-    "description": "description"
-    
-}
+GET http://localhost:3000/user/profile?email=john@gmail.com

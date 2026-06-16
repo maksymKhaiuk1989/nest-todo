@@ -11,10 +11,15 @@ export class AppConfigService {
   ) {
     this.config = {
       app: this.configService.getOrThrow('app', { infer: true }),
+      db: this.configService.getOrThrow('db', { infer: true }),
     };
   }
 
   get app() {
     return this.config.app;
+  }
+
+  get db() {
+    return this.config.db;
   }
 }

@@ -14,10 +14,9 @@ import { TasksService } from '@modules/tasks/tasks.service';
 import { CreateTaskDto } from '@modules/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@modules/tasks/dto/update-task.dto';
 import { TaskNotFoundFilter } from '@modules/tasks/filters/task-not-found.filter';
-import { IsPublic } from '@common/decorators/is-public.decorator';
 import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 import { User } from '@common/decorators/user.decorator';
-import { UserDto } from '@common/dto/user.dto';
+import { UserEntity } from '@src/modules/user/entities/user.entity';
 
 @Controller('tasks')
 @UseInterceptors(LoggingInterceptor)
@@ -25,20 +24,19 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto, @User() user: UserDto) {
+  create(@Body() createTaskDto: CreateTaskDto, @User() user: UserEntity) {
     return this.tasksService.create(createTaskDto, user);
   }
 
   @Get()
-  @IsPublic()
   findAll() {
     return this.tasksService.findAll();
   }
 
   @Get(':id')
   @UseFilters(TaskNotFoundFilter)
-  findOne(@Param('id') id: string) {
-    const task = this.tasksService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const task = await this.tasksService.findOne(id);
 
     if (task) {
       return task;
