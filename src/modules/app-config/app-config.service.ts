@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EnvironmentVariables } from '@src/modules/app-config/env.validation';
+import {
+  EnvironmentVariables,
+  NodeEnv,
+} from '@src/modules/app-config/env.validation';
 
 @Injectable()
 export class AppConfigService {
@@ -21,5 +24,14 @@ export class AppConfigService {
 
   get db() {
     return this.config.db;
+  }
+
+  // helpers
+  get isDevelopment() {
+    return this.app.NODE_ENV !== NodeEnv.PRODUCTION;
+  }
+
+  get isProduction() {
+    return this.app.NODE_ENV === NodeEnv.PRODUCTION;
   }
 }
