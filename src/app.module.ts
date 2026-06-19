@@ -6,6 +6,7 @@ import { AppConfigModule } from '@src/modules/app-config/app-config.module';
 import { DbModule } from '@src/modules/db/type-orm.module';
 import { UserModule } from '@src/modules/user/user.module';
 import { ValidationModule } from '@src/modules/validation/validation.module';
+import { AppCacheModule } from '@src/modules/cache/app-cache.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ValidationModule } from '@src/modules/validation/validation.module';
     AppConfigModule,
     ValidationModule,
     DbModule,
+    AppCacheModule,
 
     // --- Feature Modules ---
     UserModule,

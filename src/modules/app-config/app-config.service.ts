@@ -15,6 +15,7 @@ export class AppConfigService {
     this.config = {
       app: this.configService.getOrThrow('app', { infer: true }),
       db: this.configService.getOrThrow('db', { infer: true }),
+      cache: this.configService.getOrThrow('cache', { infer: true }),
     };
   }
 
@@ -24,6 +25,10 @@ export class AppConfigService {
 
   get db() {
     return this.config.db;
+  }
+
+  get cache() {
+    return this.config.cache;
   }
 
   // helpers

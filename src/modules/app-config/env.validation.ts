@@ -4,8 +4,8 @@ import { generateEnvConfig } from '@src/modules/app-config/env.config';
 import { plainToInstance, Type } from 'class-transformer';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsString,
   Max,
   Min,
@@ -23,10 +23,30 @@ class AppConfig {
   @IsEnum(NodeEnv)
   NODE_ENV: NodeEnv;
 
-  @IsNumber()
+  @IsInt()
   @Min(0)
   @Max(65535)
   PORT: number;
+}
+
+class CacheConfig {
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST: string;
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  REDIS_PORT: number;
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  REDIS_CACHE_TTL: number;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_PASSWORD: string;
 }
 
 class DbConfig {
@@ -34,7 +54,7 @@ class DbConfig {
   @IsNotEmpty()
   HOST: string;
 
-  @IsNumber()
+  @IsInt()
   @Min(0)
   @Max(65535)
   PORT: number;
@@ -60,6 +80,10 @@ export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => DbConfig)
   db: DbConfig;
+
+  @ValidateNested()
+  @Type(() => CacheConfig)
+  cache: CacheConfig;
 }
 
 export function validateEnvVars(config: Record<string, unknown>) {

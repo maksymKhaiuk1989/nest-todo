@@ -1,16 +1,15 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { setupSwagger } from '@config/swagger.config';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@src/app.module';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { setupApp } from '@src/config/setupApp';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const appConfig = app.get(AppConfigService);
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  setupSwagger(app);
+  const config = app.get(AppConfigService);
 
-  await app.listen(appConfig.app.PORT);
+  setupApp(app, config);
+
+  await app.listen(config.app.PORT);
 }
 
 void bootstrap();
