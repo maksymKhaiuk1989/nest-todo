@@ -1,0 +1,6 @@
+services:
+  redis:
+    restart: 'no'
+
+  db:
+    restart: 'no'

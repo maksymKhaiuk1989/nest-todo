@@ -32,6 +32,10 @@ export class AppConfigService {
   }
 
   // helpers
+  get isLocal() {
+    return this.app.NODE_ENV === NodeEnv.LOCAL;
+  }
+
   get isDevelopment() {
     return this.app.NODE_ENV !== NodeEnv.PRODUCTION;
   }
