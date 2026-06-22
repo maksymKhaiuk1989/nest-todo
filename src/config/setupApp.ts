@@ -1,11 +1,20 @@
-import { INestApplication, Logger } from '@nestjs/common';
+import { INestApplication, Logger, VersioningType } from '@nestjs/common';
 import { setupSwagger } from '@src/config/swagger.config';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { Reflector } from '@nestjs/core';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 
 export const setupApp = (app: INestApplication, config: AppConfigService) => {
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludePrefixes: ['_'],
+    }),
+  );
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
 
   setupSwagger(app, config);
 
