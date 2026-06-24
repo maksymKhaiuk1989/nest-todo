@@ -7,6 +7,7 @@ import { DbModule } from '@src/modules/db/type-orm.module';
 import { UserModule } from '@src/modules/user/user.module';
 import { ValidationModule } from '@src/modules/validation/validation.module';
 import { AppCacheModule } from '@src/modules/cache/app-cache.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AppCacheModule } from '@src/modules/cache/app-cache.module';
     ValidationModule,
     DbModule,
     AppCacheModule,
+    ScheduleModule.forRoot(),
 
     // --- Feature Modules ---
     UserModule,

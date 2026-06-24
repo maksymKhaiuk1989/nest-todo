@@ -16,7 +16,6 @@ export class UserController {
   @IsPublic()
   @Get('profile')
   findByEmail(@Query('email') email: CreateUserDto['email']) {
-    console.log(email);
     return this.userService.findByEmail(email);
   }
 }
