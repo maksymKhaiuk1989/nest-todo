@@ -19,14 +19,13 @@ export const User = createParamDecorator(
 
     try {
       const parsed: unknown = JSON.parse(rawUser);
-
       const userInstance = plainToInstance(UserResponseDto, parsed);
 
       await validateOrReject(userInstance);
 
       return userInstance;
-    } catch {
-      logger.log('Invalid user header');
+    } catch (error) {
+      logger.log('Invalid user header', error);
     }
   },
 );

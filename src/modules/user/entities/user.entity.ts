@@ -17,6 +17,9 @@ export class UserEntity {
   @Column()
   email: string;
 
+  @Column({ nullable: true })
+  profileImage: string;
+
   @OneToMany(() => TaskEntity, (task) => task.user)
   tasks: TaskEntity[];
 }

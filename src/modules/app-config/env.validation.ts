@@ -7,6 +7,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
+  IsUrl,
   Max,
   Min,
   ValidateNested,
@@ -72,6 +73,24 @@ class DbConfig {
   NAME: string;
 }
 
+class SupabaseConfig {
+  @IsUrl()
+  @IsNotEmpty()
+  URL: string;
+
+  @IsUrl()
+  @IsNotEmpty()
+  STORAGE_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  SERVICE_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  BUCKET_NAME: string;
+}
+
 export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => AppConfig)
@@ -84,6 +103,10 @@ export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => CacheConfig)
   cache: CacheConfig;
+
+  @ValidateNested()
+  @Type(() => SupabaseConfig)
+  supabase: SupabaseConfig;
 }
 
 export function validateEnvVars(config: Record<string, unknown>) {

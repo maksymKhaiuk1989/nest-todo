@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 export const generateEnvConfig = (config: Record<string, unknown>) => ({
   app: {
     NODE_ENV: config.NODE_ENV,
@@ -15,5 +16,11 @@ export const generateEnvConfig = (config: Record<string, unknown>) => ({
     USER: config.DB_USER,
     PASS: config.DB_PASS,
     NAME: config.DB_NAME,
+  },
+  supabase: {
+    URL: config.SUPABASE_URL,
+    STORAGE_URL: `${config.SUPABASE_URL}/storage/v1`,
+    SERVICE_KEY: config.SUPABASE_SERVICE_KEY,
+    BUCKET_NAME: config.SUPABASE_BUCKET_NAME,
   },
 });

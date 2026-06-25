@@ -8,6 +8,7 @@ import { UserModule } from '@src/modules/user/user.module';
 import { ValidationModule } from '@src/modules/validation/validation.module';
 import { AppCacheModule } from '@src/modules/cache/app-cache.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { QueuesModule } from '@src/modules/queues/queues.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     DbModule,
     AppCacheModule,
     ScheduleModule.forRoot(),
+    QueuesModule,
 
     // --- Feature Modules ---
     UserModule,
