@@ -95,11 +95,23 @@ class SupabaseConfig {
 export class AuthConfig {
   @IsString()
   @IsNotEmpty()
-  JWT_SECRET: string;
+  JWT_ACCESS_SECRET: string;
 
   @IsString()
   @Matches(/^\d+Minutes$/)
-  JWT_EXPIRES_IN: `${number}Minutes`;
+  JWT_ACCESS_EXPIRES_IN: `${number}Minutes`;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_REFRESH_SECRET: string;
+
+  @IsString()
+  @Matches(/^\d+Days$/)
+  JWT_REFRESH_EXPIRES_IN: `${number}Days`;
+
+  @IsString()
+  @IsNotEmpty()
+  COOKIE_PARSER_SECRET: string;
 }
 
 export class EnvironmentVariables {

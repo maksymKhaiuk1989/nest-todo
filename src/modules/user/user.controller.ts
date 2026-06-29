@@ -21,15 +21,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Public()
-  @Post('register')
-  register(@Body() userDto: CreateUserDto) {
-    return this.userService.create(userDto);
-  }
-
-  @Public()
   @Get('profile')
   findByEmail(@Query('email') email: CreateUserDto['email']) {
-    return this.userService.findByEmail(email);
+    return this.userService.findOneByEmail(email);
   }
 
   @Post('profile/image')

@@ -22,18 +22,11 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@src/*": [
-        "src/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "@modules/*": [
-        "src/modules/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-    },
+      "@src/*": ["src/*"],
+      "@common/*": ["src/common/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/config/*"],
+      "@utils/*": ["src/utils/*"]
+    }
   }
 }

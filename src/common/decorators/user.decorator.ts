@@ -1,31 +1,11 @@
-import { ExecutionContext, createParamDecorator, Logger } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { validateOrReject } from 'class-validator';
+import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 import { Request } from 'express';
-import { UserResponseDto } from '@src/modules/user/dto/user-response.dto';
+import { JwtPayload } from '@src/types/jwt-payload';
 
 export const User = createParamDecorator(
-  async (
-    data,
-    context: ExecutionContext,
-  ): Promise<UserResponseDto | undefined> => {
+  (_data, context: ExecutionContext): JwtPayload | undefined => {
     const request = context.switchToHttp().getRequest<Request>();
-    const rawUser = request.get('x-user-id');
-    const logger = new Logger('UserDecorator');
 
-    if (typeof rawUser !== 'string') {
-      return undefined;
-    }
-
-    try {
-      const parsed: unknown = JSON.parse(rawUser);
-      const userInstance = plainToInstance(UserResponseDto, parsed);
-
-      await validateOrReject(userInstance);
-
-      return userInstance;
-    } catch (error) {
-      logger.log('Invalid user header', error);
-    }
+    return request.user as JwtPayload;
   },
 );

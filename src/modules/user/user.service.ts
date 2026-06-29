@@ -1,6 +1,7 @@
 import { InjectQueue } from '@nestjs/bullmq';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { generateHash } from '@src/lib/utils';
 import {
   ImageBucketPath,
   ImageHandlerService,
@@ -9,7 +10,6 @@ import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
 import { UserEntity } from '@src/modules/user/entities/user.entity';
 import { Queue } from 'bullmq';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -29,19 +29,42 @@ export class UserService {
       throw new BadRequestException('User with such email already registered');
     }
 
-    const hashedPassword = await this.hashPassword(user.password);
+    const hashedPassword = await generateHash(user.password);
 
     const userEntity = this.users.create({ ...user, password: hashedPassword });
 
     return await this.users.save(userEntity);
   }
 
-  async findByEmail(email: string): Promise<UserEntity | null> {
+  async findOneByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.users.findOne({ where: { email } });
 
     if (!user) return null;
 
     return user;
+  }
+
+  async findOneById(id: string): Promise<UserEntity | null> {
+    const user = await this.users.findOne({ where: { id } });
+
+    if (!user) return null;
+
+    return user;
+  }
+
+  async update(
+    userId: string,
+    data: Partial<Pick<UserEntity, 'email' | 'hashedRefreshToken' | 'name'>>,
+  ) {
+    const user = await this.users.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const userEntity = this.users.merge(user, data);
+
+    return await this.users.save(userEntity);
   }
 
   async uploadProfileImage(userId: string, image: Express.Multer.File) {
@@ -86,11 +109,4 @@ export class UserService {
       fileName,
     );
   }
-
-  private hashPassword = async (password: string) => {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    return hashedPassword;
-  };
 }

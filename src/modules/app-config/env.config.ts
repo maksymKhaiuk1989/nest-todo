@@ -24,7 +24,10 @@ export const generateEnvConfig = (config: Record<string, unknown>) => ({
     BUCKET_NAME: config.SUPABASE_BUCKET_NAME,
   },
   auth: {
-    JWT_SECRET: config.JWT_SECRET,
-    JWT_EXPIRES_IN: config.JWT_EXPIRES_IN,
+    JWT_ACCESS_SECRET: config.JWT_ACCESS_SECRET,
+    JWT_ACCESS_EXPIRES_IN: config.JWT_ACCESS_EXPIRES_IN,
+    JWT_REFRESH_SECRET: config.JWT_REFRESH_SECRET,
+    JWT_REFRESH_EXPIRES_IN: config.JWT_REFRESH_EXPIRES_IN,
+    COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
   },
 });

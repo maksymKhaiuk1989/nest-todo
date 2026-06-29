@@ -20,6 +20,10 @@ export class UserEntity {
   @Column({ nullable: true })
   profileImage: string;
 
+  @Column({ nullable: true })
+  @Exclude()
+  hashedRefreshToken: string;
+
   @OneToMany(() => TaskEntity, (task) => task.user)
   tasks: TaskEntity[];
 }

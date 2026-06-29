@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from '@src/common/decorators/is-public.decorator';
+import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { JwtPayload } from '@src/types/jwt-payload';
 import { Request } from 'express';
 
@@ -15,6 +16,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private readonly jwtService: JwtService,
+    private readonly config: AppConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -29,11 +31,14 @@ export class AuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException('JWT Token not found');
     }
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
+        secret: this.config.auth.JWT_ACCESS_SECRET,
+      });
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException('JWT Token is invalid or expired');
