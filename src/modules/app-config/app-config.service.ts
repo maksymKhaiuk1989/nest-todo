@@ -17,6 +17,7 @@ export class AppConfigService {
       db: this.configService.getOrThrow('db', { infer: true }),
       cache: this.configService.getOrThrow('cache', { infer: true }),
       supabase: this.configService.getOrThrow('supabase', { infer: true }),
+      auth: this.configService.getOrThrow('auth', { infer: true }),
     };
   }
 
@@ -34,6 +35,10 @@ export class AppConfigService {
 
   get supabase() {
     return this.config.supabase;
+  }
+
+  get auth() {
+    return this.config.auth;
   }
 
   // helpers

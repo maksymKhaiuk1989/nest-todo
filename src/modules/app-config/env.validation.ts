@@ -8,6 +8,7 @@ import {
   IsNotEmpty,
   IsString,
   IsUrl,
+  Matches,
   Max,
   Min,
   ValidateNested,
@@ -91,6 +92,16 @@ class SupabaseConfig {
   BUCKET_NAME: string;
 }
 
+export class AuthConfig {
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
+
+  @IsString()
+  @Matches(/^\d+Minutes$/)
+  JWT_EXPIRES_IN: `${number}Minutes`;
+}
+
 export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => AppConfig)
@@ -107,6 +118,10 @@ export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => SupabaseConfig)
   supabase: SupabaseConfig;
+
+  @ValidateNested()
+  @Type(() => AuthConfig)
+  auth: AuthConfig;
 }
 
 export function validateEnvVars(config: Record<string, unknown>) {

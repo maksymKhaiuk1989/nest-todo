@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { IsPublic } from '@src/common/decorators/is-public.decorator';
+import { Public } from '@src/common/decorators/is-public.decorator';
 import { User } from '@src/common/decorators/user.decorator';
 import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
 import { UserEntity } from '@src/modules/user/entities/user.entity';
@@ -20,13 +20,13 @@ import { UserService } from '@src/modules/user/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @IsPublic()
+  @Public()
   @Post('register')
   register(@Body() userDto: CreateUserDto) {
     return this.userService.create(userDto);
   }
 
-  @IsPublic()
+  @Public()
   @Get('profile')
   findByEmail(@Query('email') email: CreateUserDto['email']) {
     return this.userService.findByEmail(email);

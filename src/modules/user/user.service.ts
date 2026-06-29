@@ -6,10 +6,10 @@ import {
   ImageHandlerService,
 } from '@src/modules/image-handler/image-handler.service';
 import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
-import { UserResponseDto } from '@src/modules/user/dto/user-response.dto';
 import { UserEntity } from '@src/modules/user/entities/user.entity';
 import { Queue } from 'bullmq';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -29,10 +29,14 @@ export class UserService {
       throw new BadRequestException('User with such email already registered');
     }
 
-    return await this.users.save(user);
+    const hashedPassword = await this.hashPassword(user.password);
+
+    const userEntity = this.users.create({ ...user, password: hashedPassword });
+
+    return await this.users.save(userEntity);
   }
 
-  async findByEmail(email: string): Promise<UserResponseDto | null> {
+  async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.users.findOne({ where: { email } });
 
     if (!user) return null;
@@ -82,4 +86,11 @@ export class UserService {
       fileName,
     );
   }
+
+  private hashPassword = async (password: string) => {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    return hashedPassword;
+  };
 }
