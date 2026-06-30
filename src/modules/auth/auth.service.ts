@@ -1,9 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import {
+  App_ErrorBadRequest,
+  App_ErrorUnauthorized,
+} from '@src/common/exceptions';
 import { compareHash, expiresInToDate, generateHash } from '@src/lib/utils';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
@@ -45,13 +45,13 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new BadRequestException('Invalid email or password');
+      throw new App_ErrorBadRequest('Invalid email or password');
     }
 
     const isMatch = await compareHash(password, user.password);
 
     if (!isMatch) {
-      throw new BadRequestException('Invalid hash');
+      throw new App_ErrorBadRequest('Invalid hash');
     }
 
     return await this.generateTokensForUser(user);
@@ -68,13 +68,13 @@ export class AuthService {
     const userId = payload.sub;
 
     if (!userId || typeof userId !== 'string') {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new App_ErrorUnauthorized('Invalid refresh token');
     }
 
     const user = await this.userService.findOneById(userId);
 
     if (!user?.hashedRefreshToken) {
-      throw new UnauthorizedException('Login first');
+      throw new App_ErrorUnauthorized('Login first');
     }
 
     const isTokenMatch = await compareHash(
@@ -83,7 +83,7 @@ export class AuthService {
     );
 
     if (!isTokenMatch) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new App_ErrorUnauthorized('Invalid refresh token');
     }
 
     return await this.generateTokensForUser(user);
@@ -104,7 +104,13 @@ export class AuthService {
   }
 
   getRefreshTokenCookie(req: Request) {
-    return req.cookies[this.jwtRefreshCookieName] as string | undefined;
+    const token = req.cookies[this.jwtRefreshCookieName] as string | undefined;
+
+    if (!token) {
+      throw new App_ErrorUnauthorized('Refresh token not provided');
+    }
+
+    return token;
   }
 
   private async generateTokens(payload: JwtPayload) {

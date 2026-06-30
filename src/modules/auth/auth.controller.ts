@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { Public } from '@src/common/decorators/is-public.decorator';
 import { User } from '@src/common/decorators/user.decorator';
 import { AuthService } from '@src/modules/auth/auth.service';
@@ -51,10 +44,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = this.authService.getRefreshTokenCookie(req);
-
-    if (!refreshToken) {
-      throw new UnauthorizedException('Refresh token not provided');
-    }
 
     const tokens = await this.authService.refresh(refreshToken);
 

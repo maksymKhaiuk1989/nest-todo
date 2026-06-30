@@ -1,6 +1,7 @@
 import { InjectQueue } from '@nestjs/bullmq';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { App_ErrorBadRequest } from '@src/common/exceptions';
 import { generateHash } from '@src/lib/utils';
 import {
   ImageBucketPath,
@@ -26,7 +27,7 @@ export class UserService {
     });
 
     if (isUserExists.length > 0) {
-      throw new BadRequestException('User with such email already registered');
+      throw new App_ErrorBadRequest('User with such email already registered');
     }
 
     const hashedPassword = await generateHash(user.password);
@@ -59,7 +60,7 @@ export class UserService {
     const user = await this.users.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new App_ErrorBadRequest('User not found');
     }
 
     const userEntity = this.users.merge(user, data);
@@ -83,7 +84,7 @@ export class UserService {
     const user = await this.users.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new App_ErrorBadRequest('User not found');
     }
 
     user.profileImage = imageUrl.data?.path;
@@ -95,13 +96,13 @@ export class UserService {
     const user = await this.users.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new App_ErrorBadRequest('User not found');
     }
 
     const fileName = user.profileImage;
 
     if (!fileName) {
-      throw new BadRequestException('User has no profile image');
+      throw new App_ErrorBadRequest('User has no profile image');
     }
 
     return await this.imageService.deleteImage(
