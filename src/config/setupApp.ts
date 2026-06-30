@@ -25,7 +25,10 @@ export const setupApp = (app: INestApplication, config: AppConfigService) => {
     `
      APP STARTED: in ${config.app.NODE_ENV} environment,
      - PORT: ${config.app.PORT},
-     - TIME: ${new Date().toLocaleTimeString('uk-UA')}
+     -  TIME: ${new Date().toLocaleTimeString('uk-UA')}
+     - SWAGGER: ${
+       !config.isProduction ? 'http://localhost:3000/api' : 'NOT AVAILABLE'
+     }
     `,
   );
 };

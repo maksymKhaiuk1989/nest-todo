@@ -4,21 +4,34 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compareHash, generateHash } from '@src/lib/utils';
+import { compareHash, expiresInToDate, generateHash } from '@src/lib/utils';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
 import { UserLoginEmailDto } from '@src/modules/user/dto/user-login-email.dto';
 import { UserEntity } from '@src/modules/user/entities/user.entity';
 import { UserService } from '@src/modules/user/user.service';
 import { JwtPayload } from '@src/types/jwt-payload';
+import { CookieOptions } from 'express';
+import type { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
+  private readonly jwtRefreshCookieOptions: CookieOptions;
+  private readonly jwtRefreshCookieName = 'refreshToken';
+
   constructor(
     private config: AppConfigService,
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    this.jwtRefreshCookieOptions = {
+      httpOnly: true,
+      sameSite: 'lax',
+      expires: expiresInToDate(this.config.auth.JWT_REFRESH_EXPIRES_IN),
+      secure: this.config.isProduction,
+      path: '/',
+    };
+  }
 
   async register(data: CreateUserDto) {
     const user = await this.userService.create(data);
@@ -32,10 +45,14 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new BadRequestException('Invalid email or password');
     }
 
-    await compareHash(password, user.password);
+    const isMatch = await compareHash(password, user.password);
+
+    if (!isMatch) {
+      throw new BadRequestException('Invalid hash');
+    }
 
     return await this.generateTokensForUser(user);
   }
@@ -76,6 +93,18 @@ export class AuthService {
     await this.userService.update(userId, {
       hashedRefreshToken: undefined,
     });
+  }
+
+  setRefreshTokenCookie(res: Response, token: string) {
+    res.cookie(this.jwtRefreshCookieName, token, this.jwtRefreshCookieOptions);
+  }
+
+  clearRefreshTokenCookie(res: Response) {
+    res.clearCookie(this.jwtRefreshCookieName, this.jwtRefreshCookieOptions);
+  }
+
+  getRefreshTokenCookie(req: Request) {
+    return req.cookies[this.jwtRefreshCookieName] as string | undefined;
   }
 
   private async generateTokens(payload: JwtPayload) {

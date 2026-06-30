@@ -1,4 +1,3 @@
-import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 export const generateHash = async (value: string): Promise<string> => {
@@ -12,11 +11,5 @@ export const compareHash = async (
   value: string,
   hash: string,
 ): Promise<boolean> => {
-  const isMatch = await bcrypt.compare(value, hash);
-
-  if (!isMatch) {
-    throw new UnauthorizedException('Invalid hashed values');
-  }
-
-  return isMatch;
+  return await bcrypt.compare(value, hash);
 };
