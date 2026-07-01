@@ -6,6 +6,12 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 export const setupApp = (app: INestApplication, config: AppConfigService) => {
+  app.enableCors({
+    origin: config.client.CLIENT_URL.split('|'),
+    methods: 'GET,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector), {
       excludePrefixes: ['_'],
@@ -26,9 +32,8 @@ export const setupApp = (app: INestApplication, config: AppConfigService) => {
      APP STARTED: in ${config.app.NODE_ENV} environment,
      - PORT: ${config.app.PORT},
      -  TIME: ${new Date().toLocaleTimeString('uk-UA')}
-     - SWAGGER: ${
-       !config.isProduction ? 'http://localhost:3000/api' : 'NOT AVAILABLE'
-     }
+     - SWAGGER: ${!config.isProduction ? 'http://localhost:3000/api' : 'NOT AVAILABLE'}
+     - CLIENT URL: ${config.client.CLIENT_URL}
     `,
   );
 };

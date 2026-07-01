@@ -114,6 +114,12 @@ export class AuthConfig {
   COOKIE_PARSER_SECRET: string;
 }
 
+export class ClientConfig {
+  @IsString()
+  @IsNotEmpty()
+  CLIENT_URL: string;
+}
+
 export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => AppConfig)
@@ -134,6 +140,10 @@ export class EnvironmentVariables {
   @ValidateNested()
   @Type(() => AuthConfig)
   auth: AuthConfig;
+
+  @ValidateNested()
+  @Type(() => ClientConfig)
+  client: ClientConfig;
 }
 
 export function validateEnvVars(config: Record<string, unknown>) {

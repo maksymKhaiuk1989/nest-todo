@@ -4,7 +4,7 @@ import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { setupApp } from '@src/config/setupApp';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const config = app.get(AppConfigService);
 
   setupApp(app, config);

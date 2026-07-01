@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-export const generateEnvConfig = (config: Record<string, unknown>) => ({
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { EnvironmentVariables } from '@src/modules/app-config/env.validation';
+
+export const generateEnvConfig = (
+  config: Record<string, any>,
+): EnvironmentVariables => ({
   app: {
     NODE_ENV: config.NODE_ENV,
     PORT: config.PORT,
@@ -29,5 +33,8 @@ export const generateEnvConfig = (config: Record<string, unknown>) => ({
     JWT_REFRESH_SECRET: config.JWT_REFRESH_SECRET,
     JWT_REFRESH_EXPIRES_IN: config.JWT_REFRESH_EXPIRES_IN,
     COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
+  },
+  client: {
+    CLIENT_URL: config.CLIENT_URL,
   },
 });
