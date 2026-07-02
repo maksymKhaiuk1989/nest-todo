@@ -33,6 +33,7 @@ export const generateEnvConfig = (
     JWT_REFRESH_SECRET: config.JWT_REFRESH_SECRET,
     JWT_REFRESH_EXPIRES_IN: config.JWT_REFRESH_EXPIRES_IN,
     COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
+    CSRF_SECRET: config.CSRF_SECRET,
   },
   client: {
     CLIENT_URL: config.CLIENT_URL,

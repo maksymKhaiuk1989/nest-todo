@@ -4,13 +4,19 @@ import { AppConfigService } from '@src/modules/app-config/app-config.service';
 import { Reflector } from '@nestjs/core';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { CsrfService } from '@src/modules/auth/crsf.service';
 
 export const setupApp = (app: INestApplication, config: AppConfigService) => {
+  app.use(cookieParser(config.auth.COOKIE_PARSER_SECRET));
+
   app.enableCors({
-    origin: config.client.CLIENT_URL.split('|'),
+    origin: config.client.CLIENT_URL.split(','),
     methods: 'GET,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  const csrfService = app.get(CsrfService);
+  app.use(csrfService.protection);
 
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector), {
@@ -22,8 +28,6 @@ export const setupApp = (app: INestApplication, config: AppConfigService) => {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-
-  app.use(cookieParser(config.auth.COOKIE_PARSER_SECRET));
 
   setupSwagger(app, config);
 

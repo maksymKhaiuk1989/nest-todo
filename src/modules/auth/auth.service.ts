@@ -6,11 +6,11 @@ import {
 } from '@src/common/exceptions';
 import { compareHash, expiresInToDate, generateHash } from '@src/lib/utils';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
+import { UserRequestPayloadJWT } from '@src/modules/auth/types';
 import { CreateUserDto } from '@src/modules/user/dto/create-user.dto';
 import { UserLoginEmailDto } from '@src/modules/user/dto/user-login-email.dto';
 import { UserEntity } from '@src/modules/user/entities/user.entity';
 import { UserService } from '@src/modules/user/user.service';
-import { JwtPayload } from '@src/types/jwt-payload';
 import { CookieOptions } from 'express';
 import type { Request, Response } from 'express';
 
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const payload = await this.jwtService.verifyAsync<JwtPayload>(
+    const payload = await this.jwtService.verifyAsync<UserRequestPayloadJWT>(
       refreshToken,
       {
         secret: this.config.auth.JWT_REFRESH_SECRET,
@@ -99,7 +99,7 @@ export class AuthService {
     res.cookie(this.jwtRefreshCookieName, token, this.jwtRefreshCookieOptions);
   }
 
-  clearRefreshTokenCookie(res: Response) {
+  clearJwtRefreshCookie(res: Response) {
     res.clearCookie(this.jwtRefreshCookieName, this.jwtRefreshCookieOptions);
   }
 
@@ -113,7 +113,9 @@ export class AuthService {
     return token;
   }
 
-  private async generateTokens(payload: JwtPayload) {
+  private async generateTokensForUser(user: UserEntity) {
+    const payload = { sub: user.id, email: user.email };
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.config.auth.JWT_ACCESS_SECRET,
@@ -125,20 +127,12 @@ export class AuthService {
       }),
     ]);
 
-    return { accessToken, refreshToken };
-  }
-
-  private async generateTokensForUser(user: UserEntity) {
-    const payload = { sub: user.id, email: user.email };
-
-    const tokens = await this.generateTokens(payload);
-
-    const hashedRefreshToken = await generateHash(tokens.refreshToken);
+    const hashedRefreshToken = await generateHash(refreshToken);
 
     await this.userService.update(user.id, {
       hashedRefreshToken,
     });
 
-    return tokens;
+    return { accessToken, refreshToken };
   }
 }

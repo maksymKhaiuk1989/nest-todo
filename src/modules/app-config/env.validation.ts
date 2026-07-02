@@ -112,6 +112,10 @@ export class AuthConfig {
   @IsString()
   @IsNotEmpty()
   COOKIE_PARSER_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  CSRF_SECRET: string;
 }
 
 export class ClientConfig {

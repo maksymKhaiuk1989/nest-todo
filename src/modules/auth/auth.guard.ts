@@ -4,7 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { Public } from '@src/common/decorators/is-public.decorator';
 import { App_ErrorUnauthorized } from '@src/common/exceptions';
 import { AppConfigService } from '@src/modules/app-config/app-config.service';
-import { JwtPayload } from '@src/types/jwt-payload';
+import { UserRequestPayloadJWT } from '@src/modules/auth/types';
+
 import { Request } from 'express';
 
 @Injectable()
@@ -32,9 +33,12 @@ export class AuthGuard implements CanActivate {
       throw new App_ErrorUnauthorized('Access token token not found');
     }
     try {
-      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
-        secret: this.config.auth.JWT_ACCESS_SECRET,
-      });
+      const payload = await this.jwtService.verifyAsync<UserRequestPayloadJWT>(
+        token,
+        {
+          secret: this.config.auth.JWT_ACCESS_SECRET,
+        },
+      );
       request['user'] = payload;
     } catch {
       throw new App_ErrorUnauthorized('Access token is invalid or expired');
