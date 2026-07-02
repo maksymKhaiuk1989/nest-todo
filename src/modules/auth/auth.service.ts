@@ -36,7 +36,7 @@ export class AuthService {
   async register(data: CreateUserDto) {
     const user = await this.userService.create(data);
 
-    return await this.generateTokensForUser(user);
+    return user;
   }
 
   async signInWithEmail(data: UserLoginEmailDto) {
@@ -54,7 +54,9 @@ export class AuthService {
       throw new App_ErrorBadRequest('Invalid hash');
     }
 
-    return await this.generateTokensForUser(user);
+    const tokens = await this.generateTokensForUser(user);
+
+    return { user, tokens };
   }
 
   async refresh(refreshToken: string) {

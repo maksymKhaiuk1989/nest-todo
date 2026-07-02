@@ -18,15 +18,10 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  async register(
-    @Body() userDto: CreateUserDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const tokens = await this.authService.register(userDto);
+  async register(@Body() userDto: CreateUserDto) {
+    const user = await this.authService.register(userDto);
 
-    this.authService.setRefreshTokenCookie(res, tokens.refreshToken);
-
-    return { accessToken: tokens.accessToken };
+    return user;
   }
 
   @Public()
@@ -35,11 +30,12 @@ export class AuthController {
     @Body() user: UserLoginEmailDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.signInWithEmail(user);
+    const { user: returnedUser, tokens } =
+      await this.authService.signInWithEmail(user);
 
     this.authService.setRefreshTokenCookie(res, tokens.refreshToken);
 
-    return { accessToken: tokens.accessToken };
+    return { user: returnedUser, accessToken: tokens.accessToken };
   }
 
   @Public()
